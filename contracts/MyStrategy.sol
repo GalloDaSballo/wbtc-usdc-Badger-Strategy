@@ -34,8 +34,9 @@ contract MyStrategy is BaseStrategy {
     address public constant usdc = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
     address public constant weth = 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619;
 
-    // slippage tolerance 0.5% (divide by 1000) 
-    uint256 public sl = 5;
+    // slippage tolerance 0.5% (divide by MAX_BPS) 
+    uint256 public sl = 50;
+    uint256 public constant MAX_BPS = 10000;
 
     function initialize(
         address _governance,
@@ -96,9 +97,11 @@ contract MyStrategy is BaseStrategy {
 
     // @dev These are the tokens that cannot be moved except by the vault
     function getProtectedTokens() public override view returns (address[] memory) {
-        address[] memory protectedTokens = new address[](2);
-        protectedTokens[0] = want;
+        address[] memory protectedTokens = new address[](4);
+        protectedTokens[0] = STAKING_REWARDS;
         protectedTokens[1] = reward;
+        protectedTokens[2] = wbtc;
+        protectedTokens[3] = usdc;
         return protectedTokens;
     }
 
@@ -150,18 +153,6 @@ contract MyStrategy is BaseStrategy {
         return IStakingRewards(STAKING_REWARDS).earned(address(this));
     }
 
-    function testDeposit(uint256 _amount) external {
-        _deposit(_amount);
-    }
-
-    function testWithdraw() external {
-        _withdrawAll();
-    }
-
-    function testRewards() external {
-        IStakingRewards(STAKING_REWARDS).getReward();
-    }
-
     /// @dev Harvest from strategy mechanics, realizing increase in underlying position
     function harvest() external whenNotPaused returns (uint256 harvested) {
         _onlyAuthorizedActors();
@@ -191,11 +182,6 @@ contract MyStrategy is BaseStrategy {
         return earned;
     }
 
-    // Alternative Harvest with Price received from harvester, used to avoid exessive front-running
-    function harvest(uint256 price) external whenNotPaused returns (uint256 harvested) {
-
-    }
-
     /// @dev Rebalance, Compound or Pay off debt here
     function tend() external whenNotPaused {
         _onlyAuthorizedActors();
@@ -219,7 +205,7 @@ contract MyStrategy is BaseStrategy {
     /// @dev QUICK TO WBTC-USDC LP 
     function _quickToLP() internal {
         uint256 _tokens = balanceOfToken(reward);
-        uint256 _half = _tokens.mul(500).div(1000);
+        uint256 _half = _tokens.mul(5000).div(MAX_BPS);
 
         // quick to weth to wbtc
         address[] memory path = new address[](3);
@@ -237,7 +223,7 @@ contract MyStrategy is BaseStrategy {
         uint256 _wbtcIn = balanceOfToken(wbtc);
         uint256 _usdcIn = balanceOfToken(usdc);
         // add to WBTC-USDC LP pool for pool tokens
-        IUniswapRouterV2(QUICKSWAP_ROUTER).addLiquidity(wbtc, usdc, _wbtcIn, _usdcIn, _wbtcIn.mul(sl).div(1000), _usdcIn.mul(sl).div(1000), address(this), now);
+        IUniswapRouterV2(QUICKSWAP_ROUTER).addLiquidity(wbtc, usdc, _wbtcIn, _usdcIn, _wbtcIn.mul(sl).div(MAX_BPS), _usdcIn.mul(sl).div(MAX_BPS), address(this), now);
     }   
 
     function setSlippageTolerance(uint256 _s) external {
