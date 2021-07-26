@@ -2,6 +2,9 @@
 # NOTE: You don't *have* to do this, but it is often helpful for testing
 networks:
   default: polygon-main-fork
+  development:
+    cmd_settings: 
+      default_balance: 500000000000000000000000000000
 
 # automatically fetch contract sources from Etherscan
 autofetch_sources: True
