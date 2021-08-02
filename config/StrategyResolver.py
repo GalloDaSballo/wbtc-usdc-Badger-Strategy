@@ -1,5 +1,6 @@
 from helpers.StrategyCoreResolver import StrategyCoreResolver
 from rich.console import Console
+from brownie import interface
 
 console = Console()
 
@@ -80,3 +81,37 @@ class StrategyResolver(StrategyCoreResolver):
             "want": strategy.want(),
             "staking_rewards": strategy.STAKING_REWARDS(),
         }
+
+    def add_balances_snap(self, calls, entities):
+        super().add_balances_snap(calls, entities)
+        strategy = self.manager.strategy
+
+        usdc = interface.IERC20(strategy.usdc())
+        wbtc = interface.IERC20(strategy.wbtc())
+        weth = interface.IERC20(strategy.weth())
+        quick = interface.IERC20(strategy.reward()) # QUICK
+
+        calls = self.add_entity_balances_for_tokens(calls, "usdc", usdc, entities)
+        calls = self.add_entity_balances_for_tokens(calls, "wbtc", wbtc, entities)
+        calls = self.add_entity_balances_for_tokens(calls, "weth", weth, entities)
+        calls = self.add_entity_balances_for_tokens(calls, "quick", quick, entities)
+
+        return calls
+
+    def confirm_harvest_state(self, before, after, tx):
+        key = "Harvest"
+        if key in tx.events:
+            event = tx.events[key][0]
+            keys = [
+                "harvested",
+            ]
+            for key in keys:
+                assert key in event
+
+            console.print("[blue]== harvest() Harvest State ==[/blue]")
+            self.printState(event, keys)
+
+    def printState(self, event, keys):
+        for key in keys:
+            print(key, ": ", event[key])
+
