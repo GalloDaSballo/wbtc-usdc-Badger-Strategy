@@ -100,9 +100,9 @@ contract MyStrategy is BaseStrategy {
         address[] memory protectedTokens = new address[](5);
         protectedTokens[0] = want;
         protectedTokens[1] = reward;
-        protectedTokens[4] = STAKING_REWARDS;
-        protectedTokens[2] = wbtc;
-        protectedTokens[3] = usdc;
+        protectedTokens[2] = STAKING_REWARDS;
+        protectedTokens[3] = wbtc;
+        protectedTokens[4] = usdc;
         return protectedTokens;
     }
 
