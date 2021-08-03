@@ -79,8 +79,7 @@ def deploy():
     controller.setStrategy(WANT, strategy, {"from": deployer})
 
     # Quickswap some tokens here
-    router = Contract.from_explorer(
-        "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff")
+    router = interface.IUniswapRouterV2("0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff")
 
     WBTC = "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6"
     USDC = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"
