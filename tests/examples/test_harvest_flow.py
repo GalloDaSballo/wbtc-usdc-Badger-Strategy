@@ -91,7 +91,7 @@ def test_single_user_harvest_flow(deployer, vault, sett, controller, strategy, w
 
     snap.settWithdraw(shares // 2, {"from": deployer})
 
-    chain.sleep(days(3))
+    chain.sleep(days(30))
     chain.mine()
 
     snap.settHarvest({"from": strategyKeeper})

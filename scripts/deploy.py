@@ -99,7 +99,7 @@ def deploy():
             "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619", WBTC],
         deployer,
         9999999999999999,
-        {"from": deployer, "value": 50 * 10**18}
+        {"from": deployer, "value": 5 * 10**18}
     )
 
     # # Buy USDC
@@ -108,7 +108,7 @@ def deploy():
         ["0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270", USDC],
         deployer,
         9999999999999999,
-        {"from": deployer, "value": 50 * 10**18}
+        {"from": deployer, "value": 5 * 10**18}
     )
 
     # # Swap them from WBTC-USDC
