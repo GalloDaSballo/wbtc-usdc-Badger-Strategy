@@ -18,7 +18,7 @@ import {
     BaseStrategy
 } from "../deps/BaseStrategy.sol";
 
-contract MyStrategy is BaseStrategy {
+contract StrategyQuickBadgerWBtcUsdc is BaseStrategy {
     using SafeERC20Upgradeable for IERC20Upgradeable;
     using AddressUpgradeable for address;
     using SafeMathUpgradeable for uint256;
@@ -34,8 +34,7 @@ contract MyStrategy is BaseStrategy {
     address public constant usdc = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
     address public constant weth = 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619;
 
-    // slippage tolerance 0.5% (divide by MAX_BPS) 
-    uint256 public sl = 50;
+    uint256 public sl;
     uint256 public constant MAX_BPS = 10000;
 
     function initialize(
@@ -57,6 +56,9 @@ contract MyStrategy is BaseStrategy {
         performanceFeeStrategist = _feeConfig[1];
         withdrawalFee = _feeConfig[2];
 
+        // Set the default slippage tolerance to 5% (divide by MAX_BPS)
+        sl = 50;
+
         /// @dev do one off approvals here
         IERC20Upgradeable(want).safeApprove(STAKING_REWARDS, type(uint256).max);
         IERC20Upgradeable(wbtc).safeApprove(STAKING_REWARDS, type(uint256).max);
@@ -73,7 +75,7 @@ contract MyStrategy is BaseStrategy {
 
     // @dev Specify the name of the strategy
     function getName() external override pure returns (string memory) {
-        return "QUICKSWAP WBTC-USDC Farming";
+        return "StrategyQuickBadgerWBtcUsdc";
     }
 
     // @dev Specify the version of the Strategy, for upgrades

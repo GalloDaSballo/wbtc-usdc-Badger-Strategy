@@ -210,7 +210,7 @@ def test_withdraw_other(deployer, sett, controller, strategy, want):
 
     sett.earn({"from": deployer})
 
-    chain.sleep(days(0.5))
+    chain.sleep(days(1))
     chain.mine()
 
     if strategy.isTendable():

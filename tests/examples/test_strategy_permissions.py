@@ -67,6 +67,7 @@ def test_strategy_action_permissions(deployer, sett, controller, strategy, want)
         strategy.harvest({"from": randomUser})
 
     for actor in authorizedActors:
+        chain.sleep(days(1))
         strategy.harvest({"from": actor})
 
     # (if tendable) tend: onlyAuthorizedActors
