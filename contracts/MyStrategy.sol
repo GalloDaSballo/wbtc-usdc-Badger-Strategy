@@ -34,8 +34,7 @@ contract StrategyQuickBadgerWBtcUsdc is BaseStrategy {
     address public constant usdc = 0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174;
     address public constant weth = 0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619;
 
-    // slippage tolerance 0.5% (divide by MAX_BPS) 
-    uint256 public sl = 50;
+    uint256 public sl;
     uint256 public constant MAX_BPS = 10000;
 
     function initialize(
@@ -56,6 +55,9 @@ contract StrategyQuickBadgerWBtcUsdc is BaseStrategy {
         performanceFeeGovernance = _feeConfig[0];
         performanceFeeStrategist = _feeConfig[1];
         withdrawalFee = _feeConfig[2];
+
+        // Set the default slippage tolerance to 5% (divide by MAX_BPS)
+        sl = 50;
 
         /// @dev do one off approvals here
         IERC20Upgradeable(want).safeApprove(STAKING_REWARDS, type(uint256).max);
